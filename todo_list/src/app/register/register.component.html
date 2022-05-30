@@ -1,0 +1,32 @@
+<div class="main-w3layouts wrapper">
+  <h1>Register to Continue...</h1>
+  <div class="main-agileinfo">
+    <div class="agileits-top">
+      <form method="post">
+        <input type="email" placeholder="email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}"/>
+        <input type="password" placeholder="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}"/>
+        <div class="wthree-text">
+          <label class="anim">
+            <input type="checkbox" class="checkbox" required="">
+            <span> I Agree To The Terms & Conditions</span>
+          </label>
+          <div class="clear"> </div>
+        </div>
+        <button type="submit" (click)="register()">SIGNUP</button>
+      </form>
+      <p>Have an Account? <a routerLink="/login"> Login Now!</a></p>
+    </div>
+  </div>
+  <ul class="colorlib-bubbles">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+</div>

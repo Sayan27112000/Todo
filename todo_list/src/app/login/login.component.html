@@ -1,0 +1,19 @@
+<div class="login-container" onclick="onclick">
+    <div class="top"></div>
+    <div class="bottom"></div>
+    <div class="center">
+        <h2>Please Sign In</h2>
+        <input type="email" placeholder="email" [(ngModel)]="email" />
+        <input type="password" placeholder="password" [(ngModel)]="password" />
+        <p>Don't have an account? <a routerLink="/register">Create new</a></p>
+        <div class="row mt-1">
+            <div class="col-md-6">
+                <button type="submit" (click)="login()">LOGIN</button>
+            </div>
+            <div class="col-md-6">
+                <button type="submit" (click)="signInWithGoogle()">Google</button>
+            </div>
+        </div>
+        
+    </div>
+</div>

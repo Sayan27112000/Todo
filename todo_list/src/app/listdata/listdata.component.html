@@ -1,0 +1,158 @@
+<div class="row mt-5">
+    <div class="col-md-7 offset-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h3 style="text-align: center; font-weight: 600;">TODO LIST</h3>
+          <form [formGroup]="userForm" (submit)="createNewTask()">
+            <div class="mt-4">
+              <div class="form-row">
+  
+                <div class="col-md-12">
+                  <div class="form-group mb-2">
+                    <label> Task Name : </label>
+                  </div>
+                  <div class="form-row mb-2">
+                    <div class="col-md-12">
+                      <input type="text" formControlName="taskname" class="form-control form-input-cls"
+                        placeholder="Task name/link" [ngClass]="{'is-invalid': listData && f['taskname'].errors}"
+                        required [(ngModel)]="taskname">
+                      <div *ngIf="listData && f['taskname'].errors" class="invalid-feedback">
+                        <div *ngIf="f['taskname'].errors?.['required']">Task Name is required</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="col-md-12">
+                  <div class="form-group mb-2">
+                    <label> Date : </label>
+                  </div>
+                  <div class="form-row mb-2">
+                    <div class="col-md-12">
+                      <input type="date" formControlName="date" class="form-control form-input-cls" placeholder="Date"
+                        [ngClass]="{'is-invalid': listData && f['date'].errors}" [(ngModel)]="date">
+                      <div *ngIf="listData && f['date'].errors" class="invalid-feedback">
+                        <div *ngIf="f['date'].errors?.['required']">Date is required</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="col-md-12">
+                  <div class="form-group mb-2">
+                    <label> Status : </label>
+                  </div>
+                  <div class="form-row mb-2">
+                    <div class="col-md-12">
+                      <input type="text" formControlName="status" class="form-control form-input-cls"
+                        placeholder="COMPLETED/PENDING" [ngClass]="{'is-invalid': listData && f['status'].errors}" [(ngModel)]="status">
+                      <div *ngIf="listData && f['status'].errors" class="invalid-feedback">
+                        <div *ngIf="f['status'].errors?.['required']">Status is required</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="form-row mt-4" style="padding: 10px;">
+                  <div class="buttons">
+                    <button id="btn" type="button" class="btn btn-primary" (click)="addItem()"
+                      [disabled]="!userForm.valid">ADD</button> &nbsp;
+                    <button id="btn" type="button" class="btn btn-secondary" (click)="reset()"
+                      [disabled]="!userForm.valid">RESET</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+  
+    </div>
+    <!-- <div class="col-md-2"></div> -->
+  </div>
+  
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <table class="table table-bordered table-hover table-striped">
+        <thead class="thead-light">
+          <tr>
+            <th style="width: 50%;"> TASK NAME </th>
+            <th style="width: 20%;"> DATE </th>
+            <th style="width: 20%;"> STATUS </th>
+            <th style="width: 20%;"> ACTION </th>
+          </tr>
+        </thead>
+  
+        <tbody>
+          <tr *ngFor="let item of listData; let i = index">
+            <td>{{item.taskname}}</td>
+            <td>{{item.date}}</td>
+            <td>{{item.status}}</td>
+  
+            <td>
+              <div class="btncontainer">
+                <button class="table-row-action edit-action" id="btn" (click)="onEdit(item, i, template)"
+                  type="button">EDIT</button> &nbsp;
+  
+                <button id="btns" (click)="removeItem(item)" type="button">DELETE</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  
+    </div>
+  </div>
+  
+  <!-- PAGINATION -->
+  
+  <div class="pagination">
+    <ul class="pagination-2">
+      <li class="page-number prev"><a href="#">&laquo;</a></li>
+      <li class="page-number active"><a href="#">1</a></li>
+      <li class="page-number"><a href="#">2</a></li>
+      <li class="page-number"><a href="#">3</a></li>
+      <li class="page-number"><a href="#">4</a></li>
+      <li class="page-number"><a href="#">5</a></li>
+      <li class="page-number"><a href="#">6</a></li>
+      <li class="page-number"><a href="#">7</a></li>
+      <li class="page-number"><a href="#">8</a></li>
+      <li class="page-number"><a href="#">9</a></li>
+      <li class="page-number"><a href="#">10</a></li>
+      <li class="page-number prev"><a href="#">&raquo;</a></li>
+    </ul>
+  </div>
+  
+  <!-- Modal here -->
+  
+  <ng-template #template>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Edit Data</h4>
+    </div>
+    <div class="modal-body">
+      <div class="card border-0">
+        <div class="card-body">
+          <form id="modalform" class="mb-4">
+            <div class="form-group mb-0">
+              <label> Task Name : </label>
+            </div>
+            <input type="text" class="form-control mb-2" [(ngModel)]="taskname" name="usertaskname" />
+            <div class="form-group mb-0">
+              <label> Date : </label>
+            </div>
+            <input type="date" class="form-control mb-2" [(ngModel)]="date" name="userdate" />
+            <div class="form-group mb-0">
+              <label> Status : </label>
+            </div>
+            <input type="text" class="form-control mb-2" [(ngModel)]="status" name="userstatus" />
+  
+          </form>
+  
+          <button class="btn-primary" id="modalbtn" type="button" (click)="updateItem()">UPDATE</button> &nbsp;
+          <button class="btn-danger" id="modalbtn" type="button" (click)="closeModal()">CLOSE</button> &nbsp;
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  
+  
