@@ -20,6 +20,7 @@ export class ListdataComponent implements OnInit {
   showUpdate: boolean;
   editIndex: number = -1; //default mode means not in edit mode
   newTaskForm: any;
+  editRowID: any;
 
 
   taskname: any;
@@ -32,7 +33,7 @@ export class ListdataComponent implements OnInit {
 
 
 
-  constructor(private fb: FormBuilder, private modalService: BsModalService, private data : DataService) {
+  constructor(private fb: FormBuilder, private modalService: BsModalService, private dataService : DataService) {
 
     this.showAdd = true;
     this.showUpdate = false;
@@ -53,14 +54,19 @@ export class ListdataComponent implements OnInit {
 
   public addItem(): void {
     console.log(this.userForm.value)
+    console.log('return FB',this.dataService.addItem(this.userForm.value))
+    //this.listData.push(this.userForm.value);
+    // console.log('add', this.listData)
+    //localStorage.setItem("infos", JSON.stringify(this.listData));
+    this.dataService.addItem(this.userForm.value).then(() => {
 
-    this.listData.push(this.userForm.value);
-    console.log('add', this.listData)
-    localStorage.setItem("infos", JSON.stringify(this.listData));
-
-    Swal.fire({
-      icon: 'success',
-      title: 'Successfull...',
+      Swal.fire({
+        icon: 'success',
+        title: 'Successfull...',
+      })
+    },
+    err => {
+      Swal.fire('Error', 'Error occured', 'error');
     })
 
     this.reset();
@@ -84,15 +90,22 @@ export class ListdataComponent implements OnInit {
       confirmButtonText: 'Yes!'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.listData.forEach((value: any, index: any) => {
-          if (value == element) {
-          }
-          this.listData.splice(index, 1);
-          Swal.fire('DELETED', 'Deleted successfully', 'error')
-          localStorage.clear();
-          localStorage.setItem("infos", JSON.stringify(this.listData));
-        });
+        // this.listData.forEach((value: any, index: any) => {
+        //   if (value == element) {
+        //   }
+        //   this.listData.splice(index, 1);
+        //   Swal.fire('DELETED', 'Deleted successfully', 'error')
+        //   localStorage.clear();
+        //   localStorage.setItem("infos", JSON.stringify(this.listData));
+        // });
+        this.dataService.deleteListData(element.id).then(() => {
+          Swal.fire('DELETED', 'Deleted successfully', 'error');
+          this.getListData();
+        })
       }
+    },
+    err => {
+      Swal.fire('Error', 'Error occured', 'error');
     })
   }
 
@@ -102,13 +115,14 @@ export class ListdataComponent implements OnInit {
   }
 
   getListData(){
-    this.data.getLsitData().subscribe(res => {
-
+    this.dataService.getListData().subscribe(res => {
       this.listData = res.map((e: any) => {
         const data = e.payload.doc.data();
         data.id = e.payload.doc.id;
         return data;
       })
+      console.log('listData', this.listData);
+
 
     }, err => {
       alert('Error while fetching student data');
@@ -121,12 +135,19 @@ export class ListdataComponent implements OnInit {
   }
 
   onEdit(element: any, index: number, template: any) {
-
+    console.log('elem', element)
     this.modalRef = this.modalService.show(template);
     this.editIndex = index;
-    this.taskname = element.taskname;
-    this.date = element.date;
-    this.status = element.status;
+    this.editRowID = element.id;
+    this.dataService.getListDataByID(element.id).subscribe(res => {
+      let obj: any = res?.payload?.data();
+      this.taskname = obj.taskname;
+      this.date = obj.date;
+      this.status = obj.status;
+    },
+    err => {
+      Swal.fire('Error', 'Error occured', 'error');
+    });
   }
 
   updateItem() {
@@ -137,13 +158,17 @@ export class ListdataComponent implements OnInit {
       this.listData[this.editIndex].status = this.status;
     }
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Updated Successfully',
+    this.dataService.updateListDataByID(this.editRowID,{...this.listData[this.editIndex]}).then(() => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Updated Successfully',
+      })
+    },
+    err => {
+      Swal.fire('Error', 'Error occured', 'error');
     })
-
-    localStorage.setItem("infos", JSON.stringify(this.listData));
     this.modalRef?.hide();
+    this.getListData();
 
   }
 
